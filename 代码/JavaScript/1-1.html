@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS练习</title>
+    <script>
+        function Computer(color, weight, brand, xinghao, use) {
+            this.color = color;
+            this.weight = weight;
+            this.brand = brand;
+            this.xinghao = xinghao;
+            this.use = function (use) {
+                if (use == '看电影')
+                    console.log('see a movie');
+                else if (use == '听音乐')
+                    console.log('listen to music');
+                else if (use == '打游戏')
+                    console.log('play games');
+                else
+                    console.log('Code!');
+            }
+        }
+
+        // function reverse(s) {
+        //     var i, a = [], j = s.length - 1;
+        //     for (i = 0; s[i] <= s.length; i++) {
+        //         a[j] = s[i];
+        //         j--
+        //     }
+        //     return a;
+        // }
+        // var s = [];
+        // s = prompt("请输入一个数组");
+        // alert(reverse(s));
+
+
+
+
+        function bubbleSort(arr) {
+            var len = arr.length;
+            for (var i = 0; i < len - 1; i++) {
+                for (var j = 0; j < len - 1 - i; j++) {
+                    if (arr[j] > arr[j + 1]) {        // 相邻元素两两对比
+                        var temp = arr[j + 1];        // 元素交换
+                        arr[j + 1] = arr[j];
+                        arr[j] = temp;
+                    }
+                }
+            }
+            return arr;
+        }
+        var s = [];
+        s = prompt("请输入一个数组");
+        console.log(bubbleSort(s));
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
