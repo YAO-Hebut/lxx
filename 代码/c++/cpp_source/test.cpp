@@ -1,134 +1,89 @@
-#include <iostream>
+#include<iostream>
+#include<cmath>
 using namespace std;
-
-class polygon
+class Point_1D
 
 {
 protected:
-    int number; //边数，最多不超过100条边
-private:
-    int side_length[100]; //边长数组
-public:
-    polygon();       //构造函数根据需要重载
-    int perimeter(); //计算多边形边长
-    void display();  //输出多边形边数和周长
-    void set_len(int num, int *);
-};
 
-polygon::polygon() : number(0)
-{
-    *side_length = 0;
-}
-void polygon::set_len(int num, int len[])
-{
-    number = num;
-    for (int i = 0; i < number; i++)
-    {
-        side_length[i] = len[i];
-    }
-}
-int polygon::perimeter()
-{
-    int sum = 0;
-    for (int i = 0; i < number; i++)
-    {
-        sum += side_length[i];
-    }
-    return sum;
-}
-void polygon::display()
-{
-    cout << number << " " << perimeter() << endl;
-}
-
-class rectangle : public polygon
-{
-    int height;
-    int width;
+	float x;//1D 点的x坐标
 
 public:
-    rectangle(int, int);
-    int perimeter(); //计算多边形边长
-    void display();  //输出多边形边数和周长
+
+
+	Point_1D(float a) {
+		x = a;
+	}
+	float distance(const Point_1D& p1, const Point_1D& p2) {
+		float d = 0.0;
+		float t = 0.0;
+		t = (p1.x - p2.x)* (p1.x - p2.x);
+
+		d = sqrt(t);
+		return d;
+	}
+
 };
-rectangle::rectangle(int h, int w)
-{
-    width = w;
-    height = h;
-}
-int rectangle::perimeter()
-{
-    int sum = 0;
-    sum += (height + width) * 2;
-    return sum;
-}
-void rectangle::display()
-{
-    cout << 4 << " " << perimeter() << endl;
-}
-
-class equal_polygon : public polygon
-{
-    int side_len;
-
+class Point_2D :public  Point_1D {
+protected:
+	float y;//2D平面上点的y坐标
 public:
-    equal_polygon(int num, int len);
-    int perimeter(); //计算等边多边形边长
-    void display();  //输出多边形边数和周长
-};
-equal_polygon::equal_polygon(int num, int len) : side_len(len)
-{
-    number = num;
-}
-int equal_polygon::perimeter()
-{
-    int sum = 0;
-    sum = side_len * number;
-}
-void equal_polygon::display()
-{
-    cout << number << " " << perimeter() << endl;
-}
 
-int main()
-{
-    int n;
-    cin >> n;
-    int number[100] = {0}, pol[100], side_lenth[1000], bianshu;
-    for (int i = 0; i < n; i++)
-    {
-        cin >> pol[i];
-        if (pol[i] == 0)
-        {
-            for (int j = 0;; j++)
-            {
-                cin >> side_lenth[j];
-                if (side_lenth[j] != -1)
-                {
-                    number[i]++;
-                }
-                else
-                    break;
-            }
-            polygon p;
-            p.set_len(number[i], side_lenth);
-            p.display();
-        }
-        else if (pol[i] == 1)
-        {
-            cin >> side_lenth[0] >> side_lenth[1];
-            rectangle r(side_lenth[0], side_lenth[1]);
-            r.display();
-        }
-        else if (pol[i] == 2)
-        {
-            cin >> bianshu;
-            cin >> side_lenth[0];
-            equal_polygon e(bianshu, side_lenth[0]);
-            e.display();
-        }
-        else
-            cout << "Error: Please enter again" << endl;
-    }
-    return 0;
+	Point_2D(float a, float b) :Point_1D(a) {
+		y = b;
+	}
+	float distance1(const Point_2D& p3, const Point_2D& p4) {
+		float d = 0.0;
+		float t = 0.0;
+		t = (p3.x - p4.x) * (p3.x - p4.x) + (p3.y - p4.y) * (p3.y - p4.y);
+
+		d = sqrt(t);
+		return d;
+	}
+};
+class Point_3D :public  Point_2D {
+protected:
+	float z;//3D立体空间中点的z坐标
+public:
+	Point_3D(float a, float b, float c) :Point_2D(a, b) {
+		z = c;
+	}
+	float distance2(const Point_3D& p5, const Point_3D& p6) {
+		float d = 0.0;
+		float t = 0.0;
+		t = (p5.x - p6.x) * (p5.x - p6.x) + (p5.y- p6.y) * (p5.y - p6.y)+(p5.z - p6.z) * (p5.z - p6.z);
+		d = sqrt(t);
+		return d;
+	}
+};
+int main() {
+	int ch = 0;
+
+	while (cin >> ch) {
+		if (ch == 0)break;
+		if (ch == 1) {
+			float a,b;
+			cin >> a>>b;
+			Point_1D p1(a);
+			Point_1D p2(b);
+			
+			cout << "Distance from Point " << a << " to Point "<<b<<" is " << p1.distance(p1,p2) << endl;
+		}
+		else if (ch == 2) {
+			float a, b,c,d;
+			cin >> a >> b>>c>>d;
+			Point_2D p2(a, b);
+			Point_2D p3(c, d);
+			cout << "Distance from Point" << "(" << a << "," << b << ")" << " to Point("<<c<<","<<d<<") is " << p2.distance1(p2,p3) << endl;
+
+		}
+		else if (ch == 3) {
+			float a, b, c,d,e,f;
+			cin >> a >> b >> c>>d>>e>>f;
+			Point_3D p3(a, b, c);
+			Point_3D p4(d, e, f);
+			cout << "Distance from Point" << "(" << a << "," << b << "," << c << ")" << " to Point("<<d<<","<<e<<","<<f<<") is " << p3.distance2(p3,p4) << endl;
+		}
+	}
+	return 0;
 }
