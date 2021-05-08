@@ -3,18 +3,18 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**",
-                "D:/GCC/include/*"
+                "${workspaceFolder}/**"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "D:/GCC/bin/gcc.exe",
-            "cStandard": "c11",
+            "windowsSdkVersion": "10.0.18362.0",
+            "compilerPath": "D:/Visual Studio/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c17",
             "cppStandard": "c++17",
-            "intelliSenseMode": "gcc-x64"
+            "intelliSenseMode": "windows-msvc-x64"
         }
     ],
     "version": 4
