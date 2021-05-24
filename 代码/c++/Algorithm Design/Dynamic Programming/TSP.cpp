@@ -59,7 +59,7 @@ int subGather(int n, int num) //初始化sub[],并返回子集个数
         }
         n = n >> 1;
     }
-    sub[length] = -1; //作为借书标志
+    sub[length] = -1; //作为结束标志
     return length;
 }
 
@@ -93,15 +93,15 @@ int doTSP(int num)
         d[i][0] = arc[i][0];
     }
     int length;
-    int m = 1; //m控制此时处于哪个集合阶段
-    while (m < num - 1)
+    int m = 1;          //m控制此时处于哪个集合阶段
+    while (m < num - 1) //按列填入表格，从第2列开始到倒数第二列结束
     {
         for (j = 1; j < col; j++)
         {
-            length = subGather(j, num);
+            length = subGather(j, num); //子集个数
             if (m == length)
             {
-                for (i = 1; i < num; i++)
+                for (i = 1; i < num; i++) //填入每一行
                 {
                     if (subContain(i) == 0) //该元素不存在于该子集
                     {
@@ -128,7 +128,7 @@ int doTSP(int num)
     int k;
     int route;
     length = subGather(col - 1, num);
-    for (k = 0; k < length; k++)
+    for (k = 0; k < length; k++) //填入最后一列
     {
         route = arc[0][sub[k]] + d[sub[k]][deSub(sub[k], col - 1)];
         if (route < min)
@@ -156,7 +156,7 @@ int main()
 {
     int num;
     int path;
-    cout << "请输入城市个数：";
+    cout << "请输入节点个数：";
     cin >> num;
     setDistance(num);
     path = doTSP(num);
@@ -168,7 +168,7 @@ int main()
     cout << "1->";
     for (int i = 1; i < num - 1; i++)
     {
-        cout << sub[i] << "->";
+        cout << sub[i] << "->"; //填入最后一列时的sub[]就是最短路径点的集合
     }
     cout << "1" << endl;
 
