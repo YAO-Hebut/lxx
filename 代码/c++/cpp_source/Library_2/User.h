@@ -18,6 +18,7 @@ public:
     bool is_Student = 1; //默认为学生
 
     User();
+    ~User();
 };
 
 #endif

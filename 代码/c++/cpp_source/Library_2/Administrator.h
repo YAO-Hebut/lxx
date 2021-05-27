@@ -17,9 +17,9 @@ void ArrangeBook(vector<book> &b); //将对书的增删改查都封装到这里�
 //***********************************对书的增加***********************************//
 
 void AddBook(vector<book> &b);
-void AddName(vector<book> &b, vector<book> &c);
-void AddWriter(vector<book> &b, vector<book> &c);
-void AddID(vector<book> &b, vector<book> &c);
+void AddName(vector<book> &b, book c);
+void AddWriter(vector<book> &b, book c);
+void AddID(vector<book> &b, book c);
 
 //***********************************对书的增加***********************************//
 
@@ -40,10 +40,10 @@ void FindID(vector<book> &b, vector<book> &c);     //通过ID找书
 
 //***********************************对书的改***********************************//
 
-void ChangeBook(vector<book> &b);                    //改书的汇总
-void ChangeName(vector<book> &b, vector<book> &c);   //改书名
-void ChangeWriter(vector<book> &b, vector<book> &c); //改作者
-void ChangeID(vector<book> &b, vector<book> &c);     //改书ID
+void ChangeBook(vector<book> &b);   //改书的汇总
+void ChangeName(vector<book> &b);   //改书名
+void ChangeWriter(vector<book> &b); //改作者
+void ChangeID(vector<book> &b);     //改书ID
 
 //***********************************对书的改***********************************//
 
@@ -61,7 +61,7 @@ void PaybackBook(vector<book> &b); //借助FindBook进行，改变标志位即�
 
 void Login(vector<User> &u); //注册
 
-void Address(vector<User> &u); //登录
+int Address(vector<User> &u); //登录
 
 //**************************************User的操作*************************************************//
 
@@ -73,5 +73,49 @@ void saveinUser(vector<User> &u); //User信息存入
 void fetchUser(vector<User> &u);  //Book信息读出，main()函数一开始时就进行读出操作，即信息的初始化
 
 //*************************************信息存入.txt文件的操作***************************************//
+
+void Begin(vector<book> &b, vector<User> &u); //开始界面
+
+void show_Menu_Arrange()
+{
+    cout << "******************************" << endl;
+    cout << "********* 1.添加书籍 ********" << endl;
+    cout << "********* 2.查找书籍 ********" << endl;
+    cout << "********* 3.更改书籍信息********" << endl;
+    cout << "********* 4.删除书籍********" << endl;
+    cout << "********* 5.借书********" << endl;
+    cout << "********* 6.还书********" << endl;
+    cout << "**********其他键退出***********" << endl;
+    cout << "******************************" << endl;
+}
+
+void show_Menu_Find()
+{
+    cout << "******************************" << endl;
+    cout << "********* 1.按书名查找 ********" << endl;
+    cout << "********* 2.按作者查找 ********" << endl;
+    cout << "********* 3.按ID查找   ********" << endl;
+    cout << "**********其他键退出***********" << endl;
+    cout << "******************************" << endl;
+}
+
+void show_Menu_Change()
+{
+    cout << "******************************" << endl;
+    cout << "********* 1.修改书名 ********" << endl;
+    cout << "********* 2.修改作者 ********" << endl;
+    cout << "********* 3.修改ID  ********" << endl;
+    cout << "**********其他键退出***********" << endl;
+    cout << "******************************" << endl;
+}
+
+void show_Menu_Begin()
+{
+    cout << "*************************" << endl;
+    cout << "********* 1.登录 ********" << endl;
+    cout << "********* 2.注册 ********" << endl;
+    cout << "********其他键退出********" << endl;
+    cout << "*************************" << endl;
+}
 
 #endif

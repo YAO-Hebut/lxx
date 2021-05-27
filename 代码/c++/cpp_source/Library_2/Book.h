@@ -18,10 +18,11 @@ public:
     string data;     //记录借还日期
 
     book();
-    ostream &operator<<(const book b) //对“<<”进行重载，使得可以直接输出book类
+    ~book();
+    void show()
     {
-        cout << b.name << " " << b.writer << " " << b.ID << " ";
-        if (b.status)
+        cout << name << " " << writer << " " << ID << " ";
+        if (status)
         {
             cout << "可借"
                  << " ";
@@ -31,7 +32,7 @@ public:
             cout << "已借出"
                  << " ";
         }
-        cout << "借出日期" << b.data << endl;
+        cout << "借出日期" << data << endl;
     }
 };
 
