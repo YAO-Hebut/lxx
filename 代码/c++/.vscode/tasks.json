@@ -6,12 +6,10 @@
             "command": "D:\\GCC\\x86_64-8.1.0-release-win32-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe",
             "args": [
                 "-g",
-                "${fileDirname}\\*.h",
+                "${file}",
+                // "${fileDirname}\\Administrator.cpp",
                 "-o",
-                "D:\\Codefield\\Code\\c++\\bin\\${fileBasenameNoExtension}.exe",
-                
-
-
+                "D:\\Codefield\\Code\\c++\\bin\\${fileBasenameNoExtension}.exe"
             ],
             "options": {
                 "cwd": "D:\\GCC\\x86_64-8.1.0-release-win32-seh-rt_v6-rev0\\mingw64\\bin"

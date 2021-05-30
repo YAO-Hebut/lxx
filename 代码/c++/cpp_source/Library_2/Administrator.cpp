@@ -52,6 +52,7 @@ void ArrangeBook(vector<book> &b) //将对书的增删改查都封装到这里�
         if (key == quanxian)
         {
             AddBook(b);
+            saveinBook(b);
         }
         break;
     case 2:
@@ -89,34 +90,55 @@ void ArrangeBook(vector<book> &b) //将对书的增删改查都封装到这里�
 
 void AddBook(vector<book> &b)
 {
-    book c;
-    AddName(b, c);
-    AddWriter(b, c);
-    AddID(b, c);
-    b.push_back(c);
-    saveinBook(b);
+    book newbook;
+    string new_name;
+    string new_writer;
+    string new_id;
+    cout << "请输入新书的ID：";
+    cin >> new_id;
+    newbook.ID = new_id;
+    int x = 0; //判断id是否已经存在
+    for (auto &i : b)
+    {
+        if (i.ID == new_id)
+            x = -1;
+    }
+    if (x == -1)
+    {
+        cout << "该ID已经存在" << endl;
+    }
+    else if (x == 0)
+    {
+        cout << "请输入新书的书名：";
+        cin >> new_name;
+        newbook.name = new_name;
+        cout << "请输入新书的作者：";
+        cin >> new_writer;
+        newbook.writer = new_writer;
+        b.push_back(newbook);
+    }
     cout << "添加完毕" << endl;
 }
-void AddName(vector<book> &b, book c)
+void AddName(vector<book> &b, book &c)
 {
     cout << "请输入新书的书名：";
     string new_name;
     cin >> new_name;
     c.name = new_name;
 }
-void AddWriter(vector<book> &b, book c)
+void AddWriter(vector<book> &b, book &c)
 {
     cout << "请输入新书的作者：";
     string new_writer;
     cin >> new_writer;
-    c.name = new_writer;
+    c.writer = new_writer;
 }
-void AddID(vector<book> &b, book c)
+void AddID(vector<book> &b, book &c)
 {
     cout << "请输入新书的ID：";
     string new_id;
     cin >> new_id;
-    c.name = new_id;
+    c.ID = new_id;
 }
 
 //***********************************对书的增加***********************************//
@@ -196,7 +218,7 @@ book FindBook(vector<book> &b) //找书的汇总,返回为book类可应用于删
         if (c.empty())
         {
 
-            temp.ID = -1;
+            temp.ID = "-1";
         }
         else if (c.size() == 1)
         {
@@ -418,20 +440,23 @@ void Login(vector<User> &u) //注册
 int Address(vector<User> &u) //登录
 {
     string id, password;
-    int i;
+    int s = 0;
     cout << "请输入您的ID" << endl;
     cin >> id;
     int x = 0; //判断ID是否存在
-    for (i = 0; i < u.size(); i++)
+    for (int i = 0; i < u.size(); i++)
     {
         if (u[i].ID == id)
+        {
             x = 1;
+            s = i;
+        }
     }
     if (x)
     {
         cout << "请输入您的密码：";
         cin >> password;
-        if (u[i].password == password)
+        if (u[s].password == password)
         {
             cout << "登录成功..." << endl;
             return 1;
@@ -453,7 +478,7 @@ int Address(vector<User> &u) //登录
 void saveinBook(vector<book> &b) //Book信息存入
 {
     ofstream ofs;
-    ofs.open("Book.txt", ios::out);
+    ofs.open("D:\\Codefield\\Code\\c++\\cpp_source\\Library_2\\Book.txt", ios::out);
     for (auto &i : b)
     {
         ofs << i.name << " " << i.writer << " " << i.ID << " " << i.data << " " << i.status << endl;
@@ -464,7 +489,7 @@ void saveinBook(vector<book> &b) //Book信息存入
 void fetchBook(vector<book> &b) //Book信息读出，main()函数一开始时就进行读出操作，即信息的初始化
 {
     ifstream ifs;
-    ifs.open("Book.txt", ios::in);
+    ifs.open("D:\\Codefield\\Code\\c++\\cpp_source\\Library_2\\Book.txt", ios::in);
     book temp;
     while (ifs >> temp.name && ifs >> temp.writer && ifs >> temp.ID && ifs >> temp.data && ifs >> temp.status)
     {
@@ -477,10 +502,10 @@ void fetchBook(vector<book> &b) //Book信息读出，main()函数一开始时就
 void saveinUser(vector<User> &u) //User信息存入
 {
     ofstream ofs;
-    ofs.open("User.txt", ios::out);
+    ofs.open("D:\\Codefield\\Code\\c++\\cpp_source\\Library_2\\User.txt", ios::out);
     for (auto &i : u)
     {
-        ofs << i.name << " " << i.ID << " " << i.password << " " << i.gender << " " << i.is_Student << endl;
+        ofs << i.ID << " " << i.name << " " << i.password << " " << i.gender << " " << i.is_Student << endl;
     }
     cout << "存入完毕..." << endl;
     ofs.close();
@@ -488,9 +513,9 @@ void saveinUser(vector<User> &u) //User信息存入
 void fetchUser(vector<User> &u) //Book信息读出，main()函数一开始时就进行读出操作，即信息的初始化
 {
     ifstream ifs;
-    ifs.open("User.txt", ios::in);
+    ifs.open("D:\\Codefield\\Code\\c++\\cpp_source\\Library_2\\User.txt", ios::in);
     User temp;
-    while (ifs >> temp.name && ifs >> temp.ID && ifs >> temp.password && ifs >> temp.gender && ifs >> temp.is_Student)
+    while (ifs >> temp.ID && ifs >> temp.name && ifs >> temp.password && ifs >> temp.gender && ifs >> temp.is_Student)
     {
         u.push_back(temp);
     }
@@ -499,3 +524,45 @@ void fetchUser(vector<User> &u) //Book信息读出，main()函数一开始时就
 }
 
 //*************************************信息存入.txt文件的操作***************************************//
+
+void show_Menu_Arrange()
+{
+    cout << "******************************" << endl;
+    cout << "********* 1.添加书籍 ********" << endl;
+    cout << "********* 2.查找书籍 ********" << endl;
+    cout << "********* 3.更改书籍信息********" << endl;
+    cout << "********* 4.删除书籍********" << endl;
+    cout << "********* 5.借书********" << endl;
+    cout << "********* 6.还书********" << endl;
+    cout << "**********其他键退出***********" << endl;
+    cout << "******************************" << endl;
+}
+
+void show_Menu_Find()
+{
+    cout << "******************************" << endl;
+    cout << "********* 1.按书名查找 ********" << endl;
+    cout << "********* 2.按作者查找 ********" << endl;
+    cout << "********* 3.按ID查找   ********" << endl;
+    cout << "**********其他键退出***********" << endl;
+    cout << "******************************" << endl;
+}
+
+void show_Menu_Change()
+{
+    cout << "******************************" << endl;
+    cout << "********* 1.修改书名 ********" << endl;
+    cout << "********* 2.修改作者 ********" << endl;
+    cout << "********* 3.修改ID  ********" << endl;
+    cout << "**********其他键退出***********" << endl;
+    cout << "******************************" << endl;
+}
+
+void show_Menu_Begin()
+{
+    cout << "*************************" << endl;
+    cout << "********* 1.登录 ********" << endl;
+    cout << "********* 2.注册 ********" << endl;
+    cout << "********其他键退出********" << endl;
+    cout << "*************************" << endl;
+}

@@ -17,8 +17,6 @@ public:
     bool status = 1; //默认为未借出状态
     string data;     //记录借还日期
 
-    book();
-    ~book();
     void show()
     {
         cout << name << " " << writer << " " << ID << " ";
