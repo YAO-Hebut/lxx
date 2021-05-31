@@ -16,6 +16,7 @@ void Begin(vector<book> &b, vector<User> &u)
     switch (x)
     {
     case 1:
+    {
         int y;
         y = Address(u);
         if (y)
@@ -28,12 +29,17 @@ void Begin(vector<book> &b, vector<User> &u)
             break;
         }
         break;
+    }
     case 2:
+    {
         Login(u);
         break;
+    }
     default:
+    {
         cout << "退出..." << endl;
         break;
+    }
     }
 }
 
@@ -47,18 +53,55 @@ void ArrangeBook(vector<book> &b) //将对书的增删改查都封装到这里�
     switch (x)
     {
     case 1:
+    {
         cout << "请输入您的权限码：";
         cin >> key;
         if (key == quanxian)
         {
-            AddBook(b);
-            saveinBook(b);
+            book newbook;
+            string id, name, writer;
+            int x = 0; //判断id是否已经存在
+            cout << "请输入新书的ID：";
+            cin >> id;
+            for (auto &i : b)
+            {
+                if (i.ID == id)
+                    x = -1;
+            }
+            if (x == -1)
+            {
+                cout << "该ID已经存在" << endl;
+            }
+            else if (x == 0)
+            {
+                cout << "请输入新书的书名：";
+                cin >> name;
+                cout << "请输入新书的作者：";
+                cin >> writer;
+                newbook.ID = id;
+                newbook.name = name;
+                newbook.writer = writer;
+                b.push_back(newbook);
+                saveinBook(b);
+            }
+            cout << "添加完毕" << endl;
         }
         break;
+    }
     case 2:
-        FindBook(b);
-        break;
+    {
+        book find_book;
+        find_book = FindBook(b);
+        if (find_book.ID == "-1")
+        {
+            cout << "未找到此书籍..." << endl;
+        }
+        else
+            find_book.show();
+    }
+    break;
     case 3:
+    {
         cout << "请输入您的权限码：";
         cin >> key;
         if (key == quanxian)
@@ -66,7 +109,9 @@ void ArrangeBook(vector<book> &b) //将对书的增删改查都封装到这里�
             ChangeBook(b);
         }
         break;
+    }
     case 4:
+    {
         cout << "请输入您的权限码：";
         cin >> key;
         if (key == quanxian)
@@ -74,15 +119,22 @@ void ArrangeBook(vector<book> &b) //将对书的增删改查都封装到这里�
             DeleteBook(b);
         }
         break;
+    }
     case 5:
+    {
         BorrowBook(b);
         break;
+    }
     case 6:
+    {
         PaybackBook(b);
         break;
+    }
     default:
+    {
         cout << "退出..." << endl;
         break;
+    }
     }
 }
 
@@ -91,16 +143,13 @@ void ArrangeBook(vector<book> &b) //将对书的增删改查都封装到这里�
 void AddBook(vector<book> &b)
 {
     book newbook;
-    string new_name;
-    string new_writer;
-    string new_id;
-    cout << "请输入新书的ID：";
-    cin >> new_id;
-    newbook.ID = new_id;
+    string id, name, writer;
     int x = 0; //判断id是否已经存在
+    cout << "请输入新书的ID：";
+    cin >> id;
     for (auto &i : b)
     {
-        if (i.ID == new_id)
+        if (i.ID == id)
             x = -1;
     }
     if (x == -1)
@@ -110,11 +159,12 @@ void AddBook(vector<book> &b)
     else if (x == 0)
     {
         cout << "请输入新书的书名：";
-        cin >> new_name;
-        newbook.name = new_name;
+        cin >> name;
         cout << "请输入新书的作者：";
-        cin >> new_writer;
-        newbook.writer = new_writer;
+        cin >> writer;
+        newbook.ID = id;
+        newbook.name = name;
+        newbook.writer = writer;
         b.push_back(newbook);
     }
     cout << "添加完毕" << endl;
@@ -201,17 +251,25 @@ book FindBook(vector<book> &b) //找书的汇总,返回为book类可应用于删
     switch (x)
     {
     case 1:
+    {
         FindName(b, c);
         break;
+    }
     case 2:
+    {
         FindWriter(b, c);
         break;
+    }
     case 3:
+    {
         FindID(b, c);
         break;
+    }
     default:
+    {
         temp.ID = "-1";
         break;
+    }
     }
     if (temp.ID != "-1")
     {
@@ -222,15 +280,17 @@ book FindBook(vector<book> &b) //找书的汇总,返回为book类可应用于删
         }
         else if (c.size() == 1)
         {
-            c[0].show();
             return c[0];
         }
         else
         {
             for (int i = 0; i < c.size(); i++)
             {
-                cout << i + 1 << ".";
-                c[i].show();
+                for (i = 0; i < c.size(); i++)
+                {
+                    cout << i + 1 << ".";
+                    c[i].show();
+                }
                 cout << "请选择您想要的书籍：";
                 int y;
                 cin >> y;
@@ -283,10 +343,9 @@ void FindID(vector<book> &b, vector<book> &c) //通过ID找书
         cin >> find_id;
         for (auto &i : b)
         {
-            if (i.name == find_id)
+            if (i.ID == find_id)
             {
                 c.push_back(i);
-                break;
             }
         }
     }
@@ -304,17 +363,25 @@ void ChangeBook(vector<book> &b) //改书的汇总
     switch (x)
     {
     case 1:
+    {
         ChangeName(b);
         break;
+    }
     case 2:
+    {
         ChangeWriter(b);
         break;
+    }
     case 3:
+    {
         ChangeID(b);
         break;
+    }
     default:
+    {
         cout << "退出..." << endl;
         break;
+    }
     }
 }
 void ChangeName(vector<book> &b) //改书名
@@ -502,7 +569,7 @@ void fetchBook(vector<book> &b) //Book信息读出，main()函数一开始时就
 void saveinUser(vector<User> &u) //User信息存入
 {
     ofstream ofs;
-    ofs.open("D:\\Codefield\\Code\\c++\\cpp_source\\Library_2\\User.txt", ios::out);
+    ofs.open("D:\\Codefield\\Code\\c++\\cpp_source\\Library_2\\User.txt", ios::app);
     for (auto &i : u)
     {
         ofs << i.ID << " " << i.name << " " << i.password << " " << i.gender << " " << i.is_Student << endl;

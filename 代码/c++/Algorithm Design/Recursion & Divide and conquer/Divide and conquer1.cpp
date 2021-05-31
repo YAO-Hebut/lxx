@@ -7,7 +7,7 @@
 #include <iomanip>
 #include <fstream>
 #define random(a, b) (rand() % (b - a) + a)
-#define N 100
+#define N 30
 using namespace std;
 struct point //点的横纵坐标（位置）用结构体来表示
 {
@@ -218,7 +218,7 @@ int main()
     cout << "蛮力法所得出的最近点对为："
          << "(" << D.index1.x << "," << D.index1.y << ")和(" << D.index2.x << "," << D.index2.y << ")" << endl;
     cout << "最近点对距离为：" << D.distance << endl;
-    ofstream fout("D:\\Codefield\\github上传笔记\\代码\\c++\\cpp_source\\Algorithm Design\\Recursion & Divide and conquer\\data.txt"); //将所有坐标写进文件
+    ofstream fout("D:\\Codefield\\Code\\c++\\Algorithm Design\\Recursion & Divide and conquer\\data.txt"); //将所有坐标写进文件
     if (!fout)
         cout << "文件不能打开" << endl;
     else

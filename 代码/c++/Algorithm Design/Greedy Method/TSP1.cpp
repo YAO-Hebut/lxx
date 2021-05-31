@@ -16,7 +16,7 @@ int TSP(int arc[n][n], int w)
     while (edgeCount < n - 1)
     {
         min = 100;
-        for (int i = 1; i <= n; i++)
+        for (int i = 0; i < n; i++)
         {
             if ((flag[i] == 0) && (arc[u][i] != 0) && arc[u][i] < min)
             {

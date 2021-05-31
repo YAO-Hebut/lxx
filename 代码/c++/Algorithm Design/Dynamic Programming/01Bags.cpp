@@ -50,6 +50,14 @@ int KnapSack(int C, int n, int w[], int v[])
         cout << x[i] << ' ';
     }
     cout << endl;
+    for (int i = 0; i <= n; i++)
+    {
+        for (int j = 0; j <= C; j++)
+        {
+            cout << V[i][j] << " ";
+        }
+        cout << endl;
+    }
     return V[n][C];
 }
 
