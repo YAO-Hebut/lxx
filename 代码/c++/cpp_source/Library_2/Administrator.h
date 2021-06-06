@@ -12,7 +12,8 @@ using namespace std;
 
 //**************************************对书的操作*************************************************//
 
-void ArrangeBook(vector<book> &b); //将对书的增删改查都封装到这里面
+void ArrangeBook_Stu(vector<book> &b, vector<User> &u, int y); //将对书的增删改查都封装到这里面
+void ArrangeBook_Adm(vector<book> &b, vector<User> &u, int y); //将对书的增删改查都封装到这里面
 
 //***********************************对书的增加***********************************//
 
@@ -55,9 +56,9 @@ void ChangeID(vector<book> &b);     //改书ID
 
 //**************************************User的操作*************************************************//
 
-void BorrowBook(vector<book> &b); //借助FindBook进行，改变标志位并记录下借书时间data即可
+void BorrowBook(vector<book> &b, vector<User> &u, int y); //借助FindBook进行，改变标志位并记录下借书时间data即可
 
-void PaybackBook(vector<book> &b); //借助FindBook进行，改变标志位即可
+void PaybackBook(vector<book> &b, vector<User> &u, int y); //借助FindBook进行，改变标志位即可
 
 void Login(vector<User> &u); //注册
 
@@ -76,8 +77,13 @@ void fetchUser(vector<User> &u);  //Book信息读出，main()函数一开始时�
 
 void Begin(vector<book> &b, vector<User> &u); //开始界面
 
-void show_Menu_Arrange();
+void show_Menu_Arrange_Stu();
+void show_Menu_Arrange_Adm();
 void show_Menu_Find();
 void show_Menu_Change();
 void show_Menu_Begin();
+
+string getTime();
+
+void punish(string payback, string borrowtime);
 #endif

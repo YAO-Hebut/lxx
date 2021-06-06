@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <ctime>
 
 using namespace std;
 
@@ -14,8 +15,8 @@ public:
     string name;
     string writer;
     string ID;
-    bool status = 1; //默认为未借出状态
-    string data;     //记录借还日期
+    bool status = 1;       //默认为未借出状态
+    string data = "0/0/0"; //记录借还日期
 
     void show()
     {
@@ -32,6 +33,8 @@ public:
         }
         cout << "借出日期" << data << endl;
     }
+
+    void Delete(vector<book> &b, book c, int i);
 };
 
 #endif

@@ -2,11 +2,38 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <ctime>
+#include <cstdio>
+#include <string>
 #include "Book.h"
 #include "User.h"
 #include "Administrator.h"
 
 using namespace std;
+
+//时间显示
+string getTime()
+{
+    time_t nowtime;
+    //首先创建一个time_t 类型的变量nowtime
+    struct tm *p;
+    //然后创建一个新时间结构体指针 p
+    time(&nowtime);
+    //使用该函数就可得到当前系统时间，使用该函数需要将传入time_t类型变量nowtime的地址值。
+    p = localtime(&nowtime);
+    //由于此时变量nowtime中的系统时间值为日历时间，我们需要调用本地时间函数p=localtime（time_t* nowtime）将nowtime变量中的日历时间转化为本地时间，存入到指针为p的时间结构体中。不改的话，可以参照注意事项手动改。
+    cout << "应还时间为：";
+    printf("%04d/%02d/%02d\n", p->tm_year + 1900, p->tm_mon + 2, p->tm_mday);
+    int year, mon, day;
+    year = p->tm_year + 1900; //Unix默认时间戳为1900年
+    mon = p->tm_mon + 1;      //默认为距离1月的月份数
+    day = p->tm_mday;
+    string time;
+    time = std::to_string(year) + "/" + std::to_string(mon) + "/" + std::to_string(day);
+    //控制格式输出
+
+    return time;
+}
 
 void Begin(vector<book> &b, vector<User> &u)
 {
@@ -19,9 +46,13 @@ void Begin(vector<book> &b, vector<User> &u)
     {
         int y;
         y = Address(u);
-        if (y)
+        if (u[y].is_Student == 1) //学生界面
         {
-            ArrangeBook(b);
+            ArrangeBook_Stu(b, u, y);
+        }
+        else if (u[y].is_Student == 0) //管理员/教师界面
+        {
+            ArrangeBook_Adm(b, u, y);
         }
         else
         {
@@ -43,10 +74,10 @@ void Begin(vector<book> &b, vector<User> &u)
     }
 }
 
-void ArrangeBook(vector<book> &b) //将对书的增删改查都封装到这里面
+void ArrangeBook_Adm(vector<book> &b, vector<User> &u, int y) //将对书的增删改查都封装到这里面
 {
     string quanxian = "190665"; //管理员特权码
-    show_Menu_Arrange();
+    show_Menu_Arrange_Adm();
     int x;
     cin >> x;
     string key; //增改删需要用特权码
@@ -98,8 +129,8 @@ void ArrangeBook(vector<book> &b) //将对书的增删改查都封装到这里�
         }
         else
             find_book.show();
+        break;
     }
-    break;
     case 3:
     {
         cout << "请输入您的权限码：";
@@ -122,12 +153,49 @@ void ArrangeBook(vector<book> &b) //将对书的增删改查都封装到这里�
     }
     case 5:
     {
-        BorrowBook(b);
+        BorrowBook(b, u, y);
         break;
     }
     case 6:
     {
-        PaybackBook(b);
+        PaybackBook(b, u, y);
+        break;
+    }
+    default:
+    {
+        cout << "退出..." << endl;
+        break;
+    }
+    }
+}
+
+void ArrangeBook_Stu(vector<book> &b, vector<User> &u, int y) //将对书的增删改查都封装到这里面
+{
+    show_Menu_Arrange_Stu();
+    int x;
+    cin >> x;
+    switch (x)
+    {
+    case 1:
+    {
+        book find_book;
+        find_book = FindBook(b);
+        if (find_book.ID == "-1")
+        {
+            cout << "未找到此书籍..." << endl;
+        }
+        else
+            find_book.show();
+        break;
+    }
+    case 2:
+    {
+        BorrowBook(b, u, y);
+        break;
+    }
+    case 3:
+    {
+        PaybackBook(b, u, y);
         break;
     }
     default:
@@ -165,6 +233,7 @@ void AddBook(vector<book> &b)
         newbook.ID = id;
         newbook.name = name;
         newbook.writer = writer;
+        newbook.data = "0/0/0";
         b.push_back(newbook);
     }
     cout << "添加完毕" << endl;
@@ -223,13 +292,12 @@ void DeleteBook(vector<book> &b)
                 else if (YN == "N")
                 {
                     cout << "退出..." << endl;
-                    break;
                 }
                 else
                 {
                     cout << "输入错误..." << endl;
-                    break;
                 }
+                saveinBook(b);
             }
         }
     }
@@ -271,15 +339,16 @@ book FindBook(vector<book> &b) //找书的汇总,返回为book类可应用于删
         break;
     }
     }
+
     if (temp.ID != "-1")
     {
         if (c.empty())
         {
-
             temp.ID = "-1";
         }
         else if (c.size() == 1)
         {
+            c[0].show();
             return c[0];
         }
         else
@@ -299,7 +368,7 @@ book FindBook(vector<book> &b) //找书的汇总,返回为book类可应用于删
                 else
                 {
                     cout << "选择错误!" << endl;
-                    temp.ID = -1;
+                    temp.ID = "-1";
                     break;
                 }
             }
@@ -312,6 +381,7 @@ void FindName(vector<book> &b, vector<book> &c) //通过书名找书  vector<boo
     cout << "请输入你要查找的书名：";
     string find_name;
     cin >> find_name;
+    int i;
     for (auto &i : b)
     {
         if (i.name == find_name)
@@ -322,31 +392,27 @@ void FindName(vector<book> &b, vector<book> &c) //通过书名找书  vector<boo
 }
 void FindWriter(vector<book> &b, vector<book> &c) //通过作者找书
 {
+    cout << "请输入你要查找的作者名：";
+    string find_writer;
+    cin >> find_writer;
+    for (auto &i : b)
     {
-        cout << "请输入你要查找的作者名：";
-        string find_writer;
-        cin >> find_writer;
-        for (auto &i : b)
+        if (i.writer == find_writer)
         {
-            if (i.writer == find_writer)
-            {
-                c.push_back(i);
-            }
+            c.push_back(i);
         }
     }
 }
 void FindID(vector<book> &b, vector<book> &c) //通过ID找书
 {
+    cout << "请输入你要查找的ID：";
+    string find_id;
+    cin >> find_id;
+    for (auto &i : b)
     {
-        cout << "请输入你要查找的ID：";
-        string find_id;
-        cin >> find_id;
-        for (auto &i : b)
+        if (i.ID == find_id)
         {
-            if (i.ID == find_id)
-            {
-                c.push_back(i);
-            }
+            c.push_back(i);
         }
     }
 }
@@ -402,6 +468,7 @@ void ChangeName(vector<book> &b) //改书名
             if (b[i].ID == c.ID)
             {
                 b[i].name = new_name;
+                saveinBook(b);
                 cout << "修改成功..." << endl;
                 break;
             }
@@ -426,6 +493,7 @@ void ChangeWriter(vector<book> &b) //改作者
             if (b[i].ID == c.ID)
             {
                 b[i].writer = new_writer;
+                saveinBook(b);
                 cout << "修改成功..." << endl;
                 break;
             }
@@ -434,7 +502,7 @@ void ChangeWriter(vector<book> &b) //改作者
 }
 void ChangeID(vector<book> &b) //改书ID
 {
-    cout << "请输入新的书名：";
+    cout << "请输入新的ID：";
     string new_id;
     cin >> new_id;
     book c;
@@ -450,6 +518,7 @@ void ChangeID(vector<book> &b) //改书ID
             if (b[i].ID == c.ID)
             {
                 b[i].ID = new_id;
+                saveinBook(b);
                 cout << "修改成功..." << endl;
                 break;
             }
@@ -463,17 +532,96 @@ void ChangeID(vector<book> &b) //改书ID
 
 //
 
-void BorrowBook(vector<book> &b) //借助FindBook进行，改变标志位并记录下借书时间data即可
+void BorrowBook(vector<book> &b, vector<User> &u, int y) //借助FindBook进行，改变标志位并记录下借书时间data即可
 {
+    if (u[y].book_num == 0)
+    {
+        cout << "您已超过借书上限，请先归还部分书籍..." << endl;
+    }
+    else
+    {
+        book borrow_book;
+        borrow_book = FindBook(b);
+        if (borrow_book.ID == "-1")
+        {
+            cout << "未找到此书..." << endl;
+        }
+        else
+        {
+            if (borrow_book.status == 0)
+            {
+                cout << "该书已被借出" << endl;
+            }
+            else
+            {
+                cout << "是否借出该书籍?(Y/N)" << endl;
+                string YN;
+                cin >> YN;
+                if (YN == "Y")
+                {
+                    for (int i = 0; i < b.size(); i++)
+                    {
+                        if (borrow_book.ID == b[i].ID)
+                        {
+                            u[y].book_num--;
+                            b[i].status = 0;
+                            b[i].data = getTime();
+                        }
+                    }
+                    saveinBook(b);
+                    saveinUser(u);
+                    cout << "借出完成!" << endl;
+                }
+            }
+        }
+    }
 }
 
-void PaybackBook(vector<book> &b) //借助FindBook进行，改变标志位即可
+void PaybackBook(vector<book> &b, vector<User> &u, int y) //借助FindBook进行，改变标志位即可
 {
+    book pay_book;
+    if (((u[y].book_num == 5) && (u[y].is_Student == 1)) || ((u[y].book_num == 10) && (u[y].is_Student == 0)))
+    {
+        cout << "您并未借阅书籍..." << endl;
+    }
+    else
+    {
+        pay_book = FindBook(b);
+        if (pay_book.status == 1)
+        {
+            cout << "该书已被归还" << endl;
+        }
+        else
+        {
+            cout << "是否归还该书籍?(Y/N)" << endl;
+            string YN;
+            string payTime = getTime(); //归还时间
+            cin >> YN;
+            if (YN == "Y")
+            {
+                for (int i = 0; i < b.size(); i++)
+                {
+                    if (pay_book.ID == b[i].ID)
+                    {
+
+                        b[i].status = 1;
+                        punish(payTime, pay_book.data);
+                        b[i].data = "0/0/0";
+                        u[y].book_num++;
+                    }
+                }
+                saveinBook(b);
+                saveinUser(u);
+                cout << "归还完成!" << endl;
+            }
+        }
+    }
 }
 
 void Login(vector<User> &u) //注册
 {
     string id, name, password, gender;
+    string key;
     User temp;
     cout << "请输入您要注册的ID";
     cin >> id;
@@ -495,12 +643,39 @@ void Login(vector<User> &u) //注册
         cin >> password;
         cout << "请输入您的性别";
         cin >> gender;
-        temp.ID = id;
-        temp.name = name;
-        temp.password = password;
-        temp.gender = gender;
-        u.push_back(temp);
-        saveinUser(u);
+        cout << "您是否为管理员/教师？(Y/N)" << endl;
+        cin >> key;
+        if (key == "Y")
+        {
+            cout << "请输入权限码:";
+            cin >> key;
+            if (key == "190665")
+            {
+                cout << "权限码正确！" << endl;
+                temp.ID = id;
+                temp.name = name;
+                temp.password = password;
+                temp.gender = gender;
+                temp.is_Student = 0;
+                temp.book_num = 10;
+                u.push_back(temp);
+                saveinUser(u);
+            }
+            else
+            {
+                cout << "权限码错误!" << endl;
+            }
+        }
+        else
+        {
+            temp.ID = id;
+            temp.name = name;
+            temp.password = password;
+            temp.gender = gender;
+            temp.book_num = 5;
+            u.push_back(temp);
+            saveinUser(u);
+        }
     }
 }
 
@@ -526,7 +701,16 @@ int Address(vector<User> &u) //登录
         if (u[s].password == password)
         {
             cout << "登录成功..." << endl;
-            return 1;
+            if (u[s].is_Student == 1)
+            {
+                cout << "欢迎同学 " << u[s].name << "  您还可以借 " << u[s].book_num << " 本书" << endl;
+                return s;
+            }
+            else
+            {
+                cout << "欢迎老师 " << u[s].name << "  您还可以借 " << u[s].book_num << " 本书" << endl;
+                return s;
+            }
         }
         else
         {
@@ -569,20 +753,20 @@ void fetchBook(vector<book> &b) //Book信息读出，main()函数一开始时就
 void saveinUser(vector<User> &u) //User信息存入
 {
     ofstream ofs;
-    ofs.open("D:\\Codefield\\Code\\c++\\cpp_source\\Library_2\\User.txt", ios::app);
+    ofs.open("D:\\Codefield\\Code\\c++\\cpp_source\\Library_2\\User.txt", ios::out);
     for (auto &i : u)
     {
-        ofs << i.ID << " " << i.name << " " << i.password << " " << i.gender << " " << i.is_Student << endl;
+        ofs << i.ID << " " << i.name << " " << i.password << " " << i.gender << " " << i.is_Student << " " << i.book_num << endl;
     }
     cout << "存入完毕..." << endl;
     ofs.close();
 }
-void fetchUser(vector<User> &u) //Book信息读出，main()函数一开始时就进行读出操作，即信息的初始化
+void fetchUser(vector<User> &u) //User信息读出，main()函数一开始时就进行读出操作，即信息的初始化
 {
     ifstream ifs;
     ifs.open("D:\\Codefield\\Code\\c++\\cpp_source\\Library_2\\User.txt", ios::in);
     User temp;
-    while (ifs >> temp.ID && ifs >> temp.name && ifs >> temp.password && ifs >> temp.gender && ifs >> temp.is_Student)
+    while (ifs >> temp.ID && ifs >> temp.name && ifs >> temp.password && ifs >> temp.gender && ifs >> temp.is_Student && ifs >> temp.book_num)
     {
         u.push_back(temp);
     }
@@ -590,17 +774,44 @@ void fetchUser(vector<User> &u) //Book信息读出，main()函数一开始时就
     ifs.close();
 }
 
+void punish(string payback, string borrowtime) //还书逾期惩罚
+{
+    int pay_time;
+    int borrow_time;
+    pay_time = atoi(payback.c_str());
+    borrow_time = atoi(borrowtime.c_str());
+    int days;
+    int punishment;
+    days = pay_time - borrow_time;
+    if (days > 30)
+    {
+        cout << "还书超过规定时间!" << endl;
+        punishment = (days - 30) * 0.5;
+        cout << "收取罚款: " << punishment << " 元(超过一天0.5元)" << endl;
+    }
+}
+
 //*************************************信息存入.txt文件的操作***************************************//
 
-void show_Menu_Arrange()
+void show_Menu_Arrange_Adm()
 {
-    cout << "******************************" << endl;
-    cout << "********* 1.添加书籍 ********" << endl;
-    cout << "********* 2.查找书籍 ********" << endl;
+    cout << "*******************************" << endl;
+    cout << "********* 1.添加书籍 **********" << endl;
+    cout << "********* 2.查找书籍 **********" << endl;
     cout << "********* 3.更改书籍信息********" << endl;
-    cout << "********* 4.删除书籍********" << endl;
-    cout << "********* 5.借书********" << endl;
-    cout << "********* 6.还书********" << endl;
+    cout << "********* 4.删除书籍************" << endl;
+    cout << "********* 5.借书***************" << endl;
+    cout << "********* 6.还书***************" << endl;
+    cout << "**********其他键退出***********" << endl;
+    cout << "******************************" << endl;
+}
+
+void show_Menu_Arrange_Stu()
+{
+    cout << "*******************************" << endl;
+    cout << "********* 1.查找书籍 **********" << endl;
+    cout << "********* 2.借书***************" << endl;
+    cout << "********* 3.还书***************" << endl;
     cout << "**********其他键退出***********" << endl;
     cout << "******************************" << endl;
 }
@@ -617,10 +828,10 @@ void show_Menu_Find()
 
 void show_Menu_Change()
 {
-    cout << "******************************" << endl;
-    cout << "********* 1.修改书名 ********" << endl;
-    cout << "********* 2.修改作者 ********" << endl;
-    cout << "********* 3.修改ID  ********" << endl;
+    cout << "*******************************" << endl;
+    cout << "********* 1.修改书名 **********" << endl;
+    cout << "********* 2.修改作者 **********" << endl;
+    cout << "********* 3.修改ID  ***********" << endl;
     cout << "**********其他键退出***********" << endl;
     cout << "******************************" << endl;
 }
