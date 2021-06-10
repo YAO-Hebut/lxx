@@ -46,18 +46,24 @@ void Begin(vector<book> &b, vector<User> &u)
     {
         int y;
         y = Address(u);
-        if (u[y].is_Student == 1) //学生界面
+        if (y == -1)
+        {
+            cout << "退出..." << endl;
+            break;
+        }
+        else if (u[y].is_Student == 1) //学生界面
         {
             ArrangeBook_Stu(b, u, y);
+            break;
         }
         else if (u[y].is_Student == 0) //管理员/教师界面
         {
             ArrangeBook_Adm(b, u, y);
+            break;
         }
         else
         {
             cout << "退出..." << endl;
-            break;
         }
         break;
     }
@@ -128,7 +134,7 @@ void ArrangeBook_Adm(vector<book> &b, vector<User> &u, int y) //将对书的增�
             cout << "未找到此书籍..." << endl;
         }
         else
-            find_book.show();
+            cout << find_book;
         break;
     }
     case 3:
@@ -153,10 +159,42 @@ void ArrangeBook_Adm(vector<book> &b, vector<User> &u, int y) //将对书的增�
     }
     case 5:
     {
-        BorrowBook(b, u, y);
+        User user;
+        user = FindUser(u);
+        if (user.ID == "-1")
+        {
+            cout << "未找到该用户..." << endl;
+        }
+        else
+        {
+            cout << user;
+        }
         break;
     }
     case 6:
+    {
+        cout << "姓名     作者       ID       在馆状态      借出日期" << endl;
+        for (auto &i : b)
+        {
+            cout << i;
+        }
+        break;
+    }
+    case 7:
+    {
+        cout << "姓名     性别       ID       密码      身份     可借书数目" << endl;
+        for (auto &i : u)
+        {
+            cout << i;
+        }
+        break;
+    }
+    case 8:
+    {
+        BorrowBook(b, u, y);
+        break;
+    }
+    case 9:
     {
         PaybackBook(b, u, y);
         break;
@@ -185,7 +223,7 @@ void ArrangeBook_Stu(vector<book> &b, vector<User> &u, int y) //将对书的增�
             cout << "未找到此书籍..." << endl;
         }
         else
-            find_book.show();
+            cout << find_book;
         break;
     }
     case 2:
@@ -281,7 +319,7 @@ void DeleteBook(vector<book> &b)
             if (b[i].ID == c.ID)
             {
                 cout << "是否删除该书？(Y/N)" << endl;
-                b[i].show();
+                cout << b[i];
                 string YN;
                 cin >> YN;
                 if (YN == "Y")
@@ -348,7 +386,7 @@ book FindBook(vector<book> &b) //找书的汇总,返回为book类可应用于删
         }
         else if (c.size() == 1)
         {
-            c[0].show();
+            cout << c[0];
             return c[0];
         }
         else
@@ -358,7 +396,7 @@ book FindBook(vector<book> &b) //找书的汇总,返回为book类可应用于删
                 for (i = 0; i < c.size(); i++)
                 {
                     cout << i + 1 << ".";
-                    c[i].show();
+                    cout << c[i];
                 }
                 cout << "请选择您想要的书籍：";
                 int y;
@@ -715,13 +753,13 @@ int Address(vector<User> &u) //登录
         else
         {
             cout << "密码错误..." << endl;
-            return 0;
+            return -1;
         }
     }
     else
     {
         cout << "该ID不存在..." << endl;
-        return 0;
+        return -1;
     }
 }
 
@@ -791,6 +829,101 @@ void punish(string payback, string borrowtime) //还书逾期惩罚
     }
 }
 
+User FindUser(vector<User> &u)
+{
+    {
+        User temp;
+        vector<User> user;
+        temp.ID = "0";
+        int x;
+        cout << "请选择您要查找的方式：" << endl;
+        show_Menu_Find_User();
+        cin >> x;
+        switch (x)
+        {
+        case 1:
+        {
+            FindName(u, user);
+            break;
+        }
+        case 2:
+        {
+            FindID(u, user);
+            break;
+        }
+        default:
+        {
+            temp.ID = "-1";
+            break;
+        }
+        }
+
+        if (temp.ID != "-1")
+        {
+            if (user.empty())
+            {
+                temp.ID = "-1";
+            }
+            else if (user.size() == 1)
+            {
+                cout << user[0];
+                return user[0];
+            }
+            else
+            {
+                for (int i = 0; i < user.size(); i++)
+                {
+                    for (i = 0; i < user.size(); i++)
+                    {
+                        cout << i + 1 << ".";
+                        cout << user[i];
+                    }
+                    cout << "请选择您想要查找的用户：";
+                    int y;
+                    cin >> y;
+                    if (y - 1 >= 0 && y - 1 < user.size())
+                        return user[y - 1];
+                    else
+                    {
+                        cout << "选择错误!" << endl;
+                        temp.ID = "-1";
+                        break;
+                    }
+                }
+            }
+        }
+        return temp;
+    }
+}
+void FindName(vector<User> &u, vector<User> &c)
+{
+    cout << "请输入你要查找的用户姓名：";
+    string find_name;
+    cin >> find_name;
+    int i;
+    for (auto &i : u)
+    {
+        if (i.name == find_name)
+        {
+            c.push_back(i);
+        }
+    }
+}
+void FindID(vector<User> &u, vector<User> &c)
+{
+    cout << "请输入你要查找用户ID：";
+    string find_ID;
+    cin >> find_ID;
+    int i;
+    for (auto &i : u)
+    {
+        if (i.ID == find_ID)
+        {
+            c.push_back(i);
+        }
+    }
+}
+
 //*************************************信息存入.txt文件的操作***************************************//
 
 void show_Menu_Arrange_Adm()
@@ -800,8 +933,11 @@ void show_Menu_Arrange_Adm()
     cout << "********* 2.查找书籍 **********" << endl;
     cout << "********* 3.更改书籍信息********" << endl;
     cout << "********* 4.删除书籍************" << endl;
-    cout << "********* 5.借书***************" << endl;
-    cout << "********* 6.还书***************" << endl;
+    cout << "********* 5.查找用户************" << endl;
+    cout << "********* 6.显示全部书籍********" << endl;
+    cout << "********* 7.显示全部用户********" << endl;
+    cout << "********* 8.借书***************" << endl;
+    cout << "********* 9.还书***************" << endl;
     cout << "**********其他键退出***********" << endl;
     cout << "******************************" << endl;
 }
@@ -843,4 +979,13 @@ void show_Menu_Begin()
     cout << "********* 2.注册 ********" << endl;
     cout << "********其他键退出********" << endl;
     cout << "*************************" << endl;
+}
+
+void show_Menu_Find_User()
+{
+    cout << "******************************" << endl;
+    cout << "********* 1.按用户姓名查找 ****" << endl;
+    cout << "********* 2.按用户ID查找 ******" << endl;
+    cout << "**********其他键退出***********" << endl;
+    cout << "******************************" << endl;
 }

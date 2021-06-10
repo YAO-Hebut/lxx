@@ -18,20 +18,22 @@ public:
     bool status = 1;       //默认为未借出状态
     string data = "0/0/0"; //记录借还日期
 
-    void show()
+    friend ostream &operator<<(ostream &ofs, book b)
     {
-        cout << name << " " << writer << " " << ID << " ";
-        if (status)
+        ofs << b.name << "     " << b.writer << "     " << b.ID << "     ";
+        if (b.status)
         {
-            cout << "可借"
-                 << " ";
+            ofs << "可借"
+                << "     ";
         }
         else
         {
-            cout << "已借出"
-                 << " ";
+            ofs << "已借出"
+                << "     ";
         }
-        cout << "借出日期" << data << endl;
+        ofs << b.data << endl;
+
+        return ofs;
     }
 
     void Delete(vector<book> &b, book c, int i);

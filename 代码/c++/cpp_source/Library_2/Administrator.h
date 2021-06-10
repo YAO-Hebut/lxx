@@ -39,6 +39,14 @@ void FindID(vector<book> &b, vector<book> &c);     //通过ID找书
 
 //***********************************对书的查找***********************************//
 
+//***********************************对用户的查找(Administrator权限下)***********************************//
+
+User FindUser(vector<User> &u);
+void FindName(vector<User> &u, vector<User> &c);
+void FindID(vector<User> &u, vector<User> &c);
+
+//***********************************对书的查找***********************************//
+
 //***********************************对书的改***********************************//
 
 void ChangeBook(vector<book> &b);   //改书的汇总
@@ -82,6 +90,7 @@ void show_Menu_Arrange_Adm();
 void show_Menu_Find();
 void show_Menu_Change();
 void show_Menu_Begin();
+void show_Menu_Find_User();
 
 string getTime();
 
