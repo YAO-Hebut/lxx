@@ -68,6 +68,10 @@ void BorrowBook(vector<book> &b, vector<User> &u, int y); //借助FindBook进行
 
 void PaybackBook(vector<book> &b, vector<User> &u, int y); //借助FindBook进行，改变标志位即可
 
+void Log(vector<book> &b, vector<User> &u, int y); //借还书日志
+
+void AllLog(vector<book> &b, vector<User> &u, int y); //全部借还书日志
+
 void Login(vector<User> &u); //注册
 
 int Address(vector<User> &u); //登录
